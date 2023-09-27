@@ -1,55 +1,11 @@
-# Foundry template
+# Reproduction of the issue
 
-This is a template for a Foundry project.
-
-## Installation
-
-To install with [DappTools](https://github.com/dapphub/dapptools):
-
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
-dapp install [user]/[repo]
-```
-
-To install with [Foundry](https://github.com/gakonst/foundry):
-
-```
-forge install [user]/[repo]
-```
-
-## Local development
-
-This project uses [Foundry](https://github.com/gakonst/foundry) as the development framework.
-
-### Dependencies
-
-```
-forge install
-```
-
-### Compilation
-
-```
-forge build
-```
-
-### Testing
-
-```
-forge test
-```
-
-### Contract deployment
-
-Please create a `.env` file before deployment. An example can be found in `.env.example`.
-
-#### Dryrun
-
-```
-forge script script/Deploy.s.sol -f [network]
-```
-
-### Live
-
-```
-forge script script/Deploy.s.sol -f [network] --verify --broadcast
+    
+```bash
+halmos -v --no-test-constructor --function=test_error_function --solver-timeout-assertion=0 --print-failed-states --error-unknown --print-potential-counterexample
 ```
