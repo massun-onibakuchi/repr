@@ -30,43 +30,4 @@ library LibApproximation {
 
         return int256(left_side) - int256(right_side);
     }
-
-    // The find_swap_amount function uses the bisection method to find the value of delta0
-    // that satisfies the proportionality condition.
-    // It repeatedly narrows down an interval [a, b] based on the value of the error function
-    // at the midpoint until the error is close to zero or the interval is sufficiently small.
-    function findSwapBaseLptSwap(PoolState memory state, uint256 baseLptDeposit, ApproxParams memory approx)
-        internal
-        view
-        returns (uint256 baseLptSwap)
-    {
-        // @todo custom initial guess/interval [a, b]
-        uint256 a = 0;
-        uint256 b = state.totalBaseLptTimesN; // Maximum possible value for delta0 is totalIn0
-        uint256 midpoint;
-        int256 error_mid;
-
-        PoolPreCompute memory comp = PoolMath.computeAmmParameters(state);
-
-        // Continue until the interval is sufficiently small or maxIteration is reached
-        for (uint256 i = 0; i < approx.maxIteration; i++) {
-            midpoint = (a + b) / 2; // Calculate the midpoint of the current interval
-            error_mid = error_function(midpoint, state, comp, baseLptDeposit);
-
-            // Check if the absolute error is less than the tolerance
-            if (error_mid.abs() < approx.eps) {
-                return midpoint;
-            }
-
-            // Adjust the interval based on the sign of the error
-            if (error_mid > 0) {
-                a = midpoint;
-            } else {
-                b = midpoint;
-            }
-        }
-
-        // If the function hasn't returned by now, it means it didn't converge within the tolerance range
-        revert Errors.ApproxFail();
-    }
 }
